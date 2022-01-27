@@ -40,12 +40,23 @@ namespace DevFreela.Core.Entities
         {
             if (Status == ProjectStatusEnum.InProgress)
                 Status = ProjectStatusEnum.Finished;
+                FinishedAt = DateTime.Now;
         }
 
         public void Start()
         {
             if (Status == ProjectStatusEnum.Created)
                 Status = ProjectStatusEnum.InProgress;
+                StarteAt = DateTime.Now;
+        }
+
+        //excluir depois que implementar o EF
+        public void Update(string title, string description, decimal totalCost)
+        {
+            this.Title = title;
+            this.Description = description;
+            this.TotalCost = totalCost;
+       
         }
     }
 }
