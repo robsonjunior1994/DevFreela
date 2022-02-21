@@ -20,4 +20,4 @@ namespace DevFreela.Core.Entities
         public DateTime CreatedAt { get; private set; }
     }
 }
-}
+

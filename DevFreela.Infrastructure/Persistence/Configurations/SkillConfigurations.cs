@@ -15,9 +15,6 @@ namespace DevFreela.Infrastructure.Persistence.Configurations
         {
             builder
                 .HasKey(s => s.Id);
-
-            builder
-               .HasKey(u => u.Id);
         }
     }
 }
