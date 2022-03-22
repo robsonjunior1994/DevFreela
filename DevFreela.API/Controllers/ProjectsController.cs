@@ -1,8 +1,11 @@
 ﻿using DevFreela.API.Models;
+using DevFreela.Application.Commands.CreateProjects;
 using DevFreela.Application.InputModels;
 using DevFreela.Application.Services.Implementations;
 using DevFreela.Application.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace DevFreela.API.Controllers
 {
@@ -10,9 +13,11 @@ namespace DevFreela.API.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _projectService;
-        public ProjectsController(IProjectService projectService)
+        private readonly IMediator _mediator;
+        public ProjectsController(IProjectService projectService, IMediator mediator)
         {
             _projectService = projectService;
+            _mediator = mediator;
         }
 
         // api/projects
@@ -37,19 +42,36 @@ namespace DevFreela.API.Controllers
             return Ok(project);
         }
 
+        //// Criando com o padrão Service
+        //// api/projects
+        //[HttpPost]
+        //public IActionResult Post([FromBody]NewProjectInputModel inputModel)
+        //{
+        //    //Validação
+        //    if (inputModel.Title.Length > 50)
+        //        return BadRequest();
+
+        //    // Criar um Projeto
+        //    var id = _projectService.Create(inputModel);
+
+        //    //returna um 2021
+        //    return CreatedAtAction(nameof(GetById), new { id = id }, inputModel);
+        //}
+
+        // Criando com o padrão SQRS commands
         // api/projects
         [HttpPost]
-        public IActionResult Post([FromBody]NewProjectInputModel inputModel)
+        public async Task<IActionResult> Post([FromBody] CreateProjectsCommand command)
         {
             //Validação
-            if (inputModel.Title.Length > 50)
+            if (command.Title.Length > 50)
                 return BadRequest();
 
             // Criar um Projeto
-            var id = _projectService.Create(inputModel);
+            var id = await _mediator.Send(command);
 
             //returna um 2021
-            return CreatedAtAction(nameof(GetById), new { id = id }, inputModel);
+            return CreatedAtAction(nameof(GetById), new { id = id }, command);
         }
 
         // api/projects/3
