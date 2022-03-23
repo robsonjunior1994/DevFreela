@@ -1,5 +1,8 @@
 ﻿using DevFreela.API.Models;
+using DevFreela.Application.Commands.CreateComment;
 using DevFreela.Application.Commands.CreateProjects;
+using DevFreela.Application.Commands.DeleteProject;
+using DevFreela.Application.Commands.UpdateProject;
 using DevFreela.Application.InputModels;
 using DevFreela.Application.Services.Implementations;
 using DevFreela.Application.Services.Interfaces;
@@ -58,7 +61,7 @@ namespace DevFreela.API.Controllers
         //    return CreatedAtAction(nameof(GetById), new { id = id }, inputModel);
         //}
 
-        // Criando com o padrão SQRS commands
+        // Criando com o padrão CQRS commands
         // api/projects
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateProjectsCommand command)
@@ -74,39 +77,80 @@ namespace DevFreela.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = id }, command);
         }
 
+        //// Criando com o padrão Service
+        //// api/projects/3
+        //[HttpPut("{id}")]
+        //public IActionResult Put(int id, [FromBody] UpdateProjectInputModel InputModel)
+        //{
+        //    //Validação
+        //    if (InputModel.Description.Length > 200)
+        //        return BadRequest();
+
+        //    //Atualiza o projeto
+        //    _projectService.Update(InputModel);
+
+        //    return NoContent();
+        //}
+
+        // Criando com o padrão CQRS
         // api/projects/3
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UpdateProjectInputModel InputModel)
+        public IActionResult Put(int id, [FromBody] UpdateProjectCommand command)
         {
             //Validação
-            if (InputModel.Description.Length > 200)
+            if (command.Description.Length > 200)
                 return BadRequest();
 
             //Atualiza o projeto
-            _projectService.Update(InputModel);
+            _mediator.Send(command);
 
             return NoContent();
         }
 
+        //// Criando com o padrão Service
+        //// api/projects/3
+        //[HttpDelete("{id}")]
+        //public IActionResult Delete(int id)
+        //{
+        //    // Validação
+        //    if (id < 0)
+        //        return BadRequest();
+
+        //    _projectService.Delete(id);
+        //    return NoContent();
+        //}
+
+        // Criando com o padrão CQRS commands
         // api/projects/3
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(DeleteProjectCommand command)
         {
             // Validação
-            if (id < 0)
+            if (command.Id < 0)
                 return BadRequest();
 
-            _projectService.Delete(id);
+            _mediator.Send(command);
             return NoContent();
         }
 
+        //// Criando com o padrão Service
+        //// api/projects/1/comments POST
+        //[HttpPost("{id}/comments")]
+        //public IActionResult PostComment(int id, [FromBody] CreateCommentInputModel InputModel)
+        //{
+        //    _projectService.CreateComment(InputModel);
+        //    return NoContent();
+        //}
+
+        // Criando com o padrão CQRS commands
         // api/projects/1/comments POST
         [HttpPost("{id}/comments")]
-        public IActionResult PostComment(int id, [FromBody] CreateCommentInputModel InputModel)
+        public async Task<IActionResult> PostComment(int id, [FromBody] CreateCommentCommand command)
         {
-            _projectService.CreateComment(InputModel);
+            await _mediator.Send(command);
             return NoContent();
         }
+
         // api/projects/1/start PUT
         [HttpPut("{id}/start")]
         public IActionResult Start(int id)
