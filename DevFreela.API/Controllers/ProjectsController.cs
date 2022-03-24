@@ -6,6 +6,8 @@ using DevFreela.Application.Commands.FinishProject;
 using DevFreela.Application.Commands.StartProject;
 using DevFreela.Application.Commands.UpdateProject;
 using DevFreela.Application.InputModels;
+using DevFreela.Application.Queries.GetAllProjects;
+using DevFreela.Application.Queries.GetProjectById;
 using DevFreela.Application.Services.Implementations;
 using DevFreela.Application.Services.Interfaces;
 using MediatR;
@@ -25,21 +27,49 @@ namespace DevFreela.API.Controllers
             _mediator = mediator;
         }
 
+        //// Criando com o padrão Service
+        //// api/projects
+        //[HttpGet]
+        //public IActionResult Get(string query)
+        //{
+        //    //Validação
+        //    //Buscar todos os projetos ou filtrar para uma busca especifica
+        //    var projects = _projectService.GetAll(query);
+        //    return Ok(projects);
+        //}
+
+        // Criando com o padrão CQRS query
         // api/projects
         [HttpGet]
-        public IActionResult Get(string query)
+        public async Task<IActionResult> Get(string query)
         {
+
             //Validação
             //Buscar todos os projetos ou filtrar para uma busca especifica
-            var projects = _projectService.GetAll(query);
+            var getAllProjectsQuery = new GetAllProjectsQuery(query);
+            var projects = await _mediator.Send(getAllProjectsQuery);
             return Ok(projects);
         }
+        //// Criando com o padrão Service
+        //// api/projects/3
+        //[HttpGet("{id}")]
+        //public IActionResult GetById(int id)
+        //{
+        //    var project = _projectService.GetById(id);
 
+        //    if (project == null)
+        //        return NotFound();
+
+        //    return Ok(project);
+        //}
+
+        // Criando com o padrão CQRS query
         // api/projects/3
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var project = _projectService.GetById(id);
+            var getProjectByIdQuery = new GetProjectByIdQuery(id);
+            var project = await _mediator.Send(getProjectByIdQuery);
 
             if (project == null)
                 return NotFound();
