@@ -2,6 +2,8 @@
 using DevFreela.Application.Commands.CreateComment;
 using DevFreela.Application.Commands.CreateProjects;
 using DevFreela.Application.Commands.DeleteProject;
+using DevFreela.Application.Commands.FinishProject;
+using DevFreela.Application.Commands.StartProject;
 using DevFreela.Application.Commands.UpdateProject;
 using DevFreela.Application.InputModels;
 using DevFreela.Application.Services.Implementations;
@@ -95,14 +97,14 @@ namespace DevFreela.API.Controllers
         // Criando com o padrão CQRS
         // api/projects/3
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UpdateProjectCommand command)
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateProjectCommand command)
         {
             //Validação
             if (command.Description.Length > 200)
                 return BadRequest();
 
             //Atualiza o projeto
-            _mediator.Send(command);
+           await _mediator.Send(command);
 
             return NoContent();
         }
@@ -123,13 +125,13 @@ namespace DevFreela.API.Controllers
         // Criando com o padrão CQRS commands
         // api/projects/3
         [HttpDelete("{id}")]
-        public IActionResult Delete(DeleteProjectCommand command)
+        public async Task<IActionResult> Delete(DeleteProjectCommand command)
         {
             // Validação
             if (command.Id < 0)
                 return BadRequest();
 
-            _mediator.Send(command);
+            await _mediator.Send(command);
             return NoContent();
         }
 
@@ -151,21 +153,42 @@ namespace DevFreela.API.Controllers
             return NoContent();
         }
 
+
+        //// Criando com o padrão Service
+        //// api/projects/1/start PUT
+        //[HttpPut("{id}/start")]
+        //public IActionResult Start(int id)
+        //{
+        //    _projectService.Start(id);
+        //    return NoContent();
+        //}
+
         // api/projects/1/start PUT
         [HttpPut("{id}/start")]
-        public IActionResult Start(int id)
+        public async Task<IActionResult> Start(StartProjectCommand command)
         {
-            _projectService.Start(id);
+            await _mediator.Send(command.Id);
             return NoContent();
         }
 
+        //// Criando com o padrão Service
+        //// api/projects/1/finish
+        //[HttpPut("{id}/finish")]
+        //public IActionResult Finish(int id)
+        //{
+        //    _projectService.Finish(id);
+        //    return NoContent();
+        //}
+
+        // Criando com o padrão CQRS commands
         // api/projects/1/finish
         [HttpPut("{id}/finish")]
-        public IActionResult Finish(int id)
+        public async Task<IActionResult> Finish(FinishProjectCommand command)
         {
-            _projectService.Finish(id);
+            await _mediator.Send(command.Id);
             return NoContent();
         }
+
 
     }
 }
