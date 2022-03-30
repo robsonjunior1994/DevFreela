@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using DevFreela.Application.ViewModels;
+using DevFreela.Core.DTOs;
+using DevFreela.Core.Repositories;
 using DevFreela.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.Data.SqlClient;
@@ -15,18 +17,18 @@ namespace DevFreela.Application.Queries.GetAllSkills
 {
     public class GetAllSkillsQueryHandler : IRequestHandler<GetAllSkillsQuery, List<SkillViewModel>>
     {
-        private readonly DevFreelaDbContext _dbContext;
+        private readonly ISkillRepository _skillRepository;
         private readonly string _connectionString;
-        public GetAllSkillsQueryHandler(DevFreelaDbContext dbContext, IConfiguration configuration)
+        public GetAllSkillsQueryHandler(ISkillRepository skillRepository, IConfiguration configuration)
         {
-            _dbContext = dbContext;
+            _skillRepository = skillRepository;
             _connectionString = configuration.GetConnectionString("DevFreelaCs");
         }
 
         //COM EF CORE
         //public async Task<List<SkillViewModel>> Handle(GetAllSkillsQuery request, CancellationToken cancellationToken)
         //{
-        //    var skills = _dbContext.Skills;
+        //    var skills = await _projectRepository.GetAll();
 
         //    var skillsViewModel = skills
         //        .Select(s => new SkillViewModel(s.Id, s.Description))
@@ -35,16 +37,9 @@ namespace DevFreela.Application.Queries.GetAllSkills
         //    return skillsViewModel;
         //}
 
-        public async Task<List<SkillViewModel>> Handle(GetAllSkillsQuery request, CancellationToken cancellationToken)
+        public async Task<List<SkillDTO>> Handle(GetAllSkillsQuery request, CancellationToken cancellationToken)
         {
-            using (var sqlConnection = new SqlConnection(_connectionString))
-            {
-                sqlConnection.Open();
-                var script = "SELECT id, Description FROM Skills";
-                var skills =  await sqlConnection.QueryAsync<SkillViewModel>(script);
-
-                return skills.ToList();
-            }
+            return await _skillRepository.GetAllDapper();
         }
     }
 }
