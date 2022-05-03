@@ -39,7 +39,7 @@ namespace DevFreela.Application.Queries.GetAllSkills
 
         public async Task<List<SkillDTO>> Handle(GetAllSkillsQuery request, CancellationToken cancellationToken)
         {
-            return await _skillRepository.GetAllDapper();
+            return await _skillRepository.GetAllDapperAsync();
         }
     }
 }

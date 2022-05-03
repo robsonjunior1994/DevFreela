@@ -22,7 +22,7 @@ namespace DevFreela.Infrastructure.Persistence.Repositories
             _connectionString = configuration.GetConnectionString("DevFreelaCs");
             _dbContext = dbContext;
         }
-        public async Task<List<SkillDTO>> GetAll()
+        public async Task<List<SkillDTO>> GetAllAsync()
         {
             var skills = await _dbContext.Skills.ToListAsync();
 
@@ -33,7 +33,7 @@ namespace DevFreela.Infrastructure.Persistence.Repositories
             return skillsDTO;
         }
 
-        public async Task<List<SkillDTO>> GetAllDapper()
+        public async Task<List<SkillDTO>> GetAllDapperAsync()
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {

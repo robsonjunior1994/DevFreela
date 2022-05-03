@@ -11,7 +11,7 @@ namespace DevFreela.Core.Repositories
     public interface ISkillRepository
     {
 
-        Task<List<SkillDTO>> GetAll();
-        Task<List<SkillDTO>> GetAllDapper();
+        Task<List<SkillDTO>> GetAllAsync();
+        Task<List<SkillDTO>> GetAllDapperAsync();
     }
 }
