@@ -26,6 +26,12 @@ namespace DevFreela.Infrastructure.Persistence.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task AddCommentAsync(ProjectComment comment)
+        {
+            await _dbContext.ProjectComments.AddAsync(comment);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<List<Project>> GetAllAsync()
         {
             return await _dbContext.Projects.ToListAsync();
@@ -40,6 +46,12 @@ namespace DevFreela.Infrastructure.Persistence.Repositories
         }
 
         public async Task StartAsync(Project project)
+        {
+            _dbContext.Projects.Update(project);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async void Update(Project project)
         {
             _dbContext.Projects.Update(project);
             await _dbContext.SaveChangesAsync();
