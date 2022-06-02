@@ -35,6 +35,17 @@ namespace DevFreela.API.Controllers
         [HttpPost]
         public IActionResult Post ([FromBody] CreateUserCommand command)
         {
+
+            if(ModelState.IsValid == false)
+            {
+                var messages = ModelState
+                    .SelectMany(ms => ms.Value.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                return BadRequest(messages);
+            }
+
             var id = _mediator.Send(command);
 
             return CreatedAtAction(nameof(GetById), new { id = id }, command);
