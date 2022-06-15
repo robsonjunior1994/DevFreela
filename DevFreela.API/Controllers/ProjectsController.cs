@@ -99,20 +99,6 @@ namespace DevFreela.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateProjectsCommand command)
         {
-            //Validação
-            if (ModelState.IsValid == false)
-            {
-                var messages = ModelState
-                    .SelectMany(ms => ms.Value.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                return BadRequest(messages);
-            }
-
-            if (command.Title.Length > 50)
-                return BadRequest();
-
             // Criar um Projeto
             var id = await _mediator.Send(command);
 
@@ -140,22 +126,8 @@ namespace DevFreela.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UpdateProjectCommand command)
         {
-            if(ModelState.IsValid == false)
-            {
-                var messages = ModelState
-                    .SelectMany(ms => ms.Value.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                return BadRequest(messages);
-            }
-
-            //Validação
-            if (command.Description.Length > 200)
-                return BadRequest();
-
             //Atualiza o projeto
-           await _mediator.Send(command);
+            await _mediator.Send(command);
 
             return NoContent();
         }
@@ -178,17 +150,6 @@ namespace DevFreela.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(DeleteProjectCommand command)
         {
-            // Validação
-            if (ModelState.IsValid == false)
-            {
-                var message = ModelState
-                    .SelectMany(ms => ms.Value.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                return BadRequest(message);
-            }
-
             await _mediator.Send(command);
             return NoContent();
         }
@@ -207,15 +168,6 @@ namespace DevFreela.API.Controllers
         [HttpPost("{id}/comments")]
         public async Task<IActionResult> PostComment(int id, [FromBody] CreateCommentCommand command)
         {
-            if (ModelState.IsValid == false)
-            {
-                var message = ModelState
-                    .SelectMany(ms => ms.Value.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-                return BadRequest(message);
-            }
-
             await _mediator.Send(command);
             return NoContent();
         }
@@ -234,17 +186,6 @@ namespace DevFreela.API.Controllers
         [HttpPut("{id}/start")]
         public async Task<IActionResult> Start(StartProjectCommand command)
         {
-            // Validação
-            if (ModelState.IsValid == false)
-            {
-                var message = ModelState
-                    .SelectMany(ms => ms.Value.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                return BadRequest(message);
-            }
-
             await _mediator.Send(command.Id);
             return NoContent();
         }
@@ -263,16 +204,6 @@ namespace DevFreela.API.Controllers
         [HttpPut("{id}/finish")]
         public async Task<IActionResult> Finish(FinishProjectCommand command)
         {
-            // Validação
-            if (ModelState.IsValid == false)
-            {
-                var message = ModelState
-                    .SelectMany(ms => ms.Value.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                return BadRequest(message);
-            }
 
             await _mediator.Send(command.Id);
             return NoContent();

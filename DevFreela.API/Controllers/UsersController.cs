@@ -25,7 +25,7 @@ namespace DevFreela.API.Controllers
             var query = new GetUserQuery(id);
             var user = await _mediator.Send(query);
 
-            if(user == null)
+            if (user == null)
                 return NotFound();
 
             return Ok(user);
@@ -33,10 +33,10 @@ namespace DevFreela.API.Controllers
 
         // api/users
         [HttpPost]
-        public IActionResult Post ([FromBody] CreateUserCommand command)
+        public IActionResult Post([FromBody] CreateUserCommand command)
         {
 
-            if(ModelState.IsValid == false)
+            if (ModelState.IsValid == false)
             {
                 var messages = ModelState
                     .SelectMany(ms => ms.Value.Errors)
@@ -57,6 +57,6 @@ namespace DevFreela.API.Controllers
         {
             // TODO: Para Módulo de Autenticação e Autorização
             return NoContent();
-        } 
+        }
     }
 }

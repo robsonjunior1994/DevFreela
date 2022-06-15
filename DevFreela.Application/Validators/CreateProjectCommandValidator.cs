@@ -13,7 +13,7 @@ namespace DevFreela.Application.Validators
         public CreateProjectCommandValidator() 
         {
             RuleFor(p => p.Description)
-                .MinimumLength(255)
+                .MaximumLength(255)
                 .WithMessage("Tamanho máximo de descrição é de 255 caracteres.");
 
             RuleFor(p => p.Title)
